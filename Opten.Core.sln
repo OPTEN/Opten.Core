@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{AA5720D7
 		build\build.cake = build\build.cake
 		build\build.ps1 = build\build.ps1
 		build\Opten.Core.nuspec = build\Opten.Core.nuspec
+		readme.md = readme.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{558AEA29-20B3-461C-9AD3-CFAAB3BD1072}"
