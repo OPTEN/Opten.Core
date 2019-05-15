@@ -5,6 +5,7 @@
 #addin "nuget:http://6pak.opten.ch/nuget/nuget-v2/?package=Opten.Cake"
 
 var target = Argument("target", "Default");
+var configuration = Argument("configuration", "Release");
 
 string feedUrl = "https://www.nuget.org/api/v2/package";
 string version = null;
@@ -35,7 +36,7 @@ Task("Version")
 	}
 
 	version = GitDescribe("../", false, GitDescribeStrategy.Tags, 0);
-
+	
 	PatchAssemblyInfo("../src/Opten.Core/Properties/AssemblyInfo.cs", version);
 	FileWriteText(dest + File("Opten.Core.variables.txt"), "version=" + version);
 });
@@ -51,22 +52,8 @@ Task("Restore-NuGet-Packages")
 	});
 });
 
-Task("Build") 
-	.IsDependentOn("Restore-NuGet-Packages") 
-	.Does(() =>
-{
-	DotNetCorePublish("../src/Opten.Core/Opten.Core.csproj", settings =>
-		settings.SetConfiguration("Debug"));
-
-	DotNetCorePublish("../src/Opten.Core/Opten.Core.csproj", settings =>
-		settings.SetConfiguration("Release"));
-
-	DotNetCorePublish("../tests/Opten.Core.Test/Opten.Core.Test.csproj", settings =>
-		settings.SetConfiguration("Release"));
-});
-
 Task("Run-Unit-Tests")
-	.IsDependentOn("Build")
+	.IsDependentOn("Restore-NuGet-Packages")
 	.Does(() =>
 {
 	var results = dest + Directory("tests");
@@ -76,27 +63,22 @@ Task("Run-Unit-Tests")
 		CreateDirectory(results);
 	}
 
-	//TODO: Why not csproj?
-	NUnit3("../tests/Opten.Core.Test/bin/Release/Opten.Core.Test.dll", new NUnit3Settings {
-		Results = new[] {
-			new NUnit3Result {
-				FileName = results + File("Opten.Core.Test.xml"),
-				Format = "nunit2" // Wait until Bamboo 5.14 is out to support NUnit 3!
-			}
-		},
-		Configuration = "Release"
-	});
+	DotNetCoreTest("../tests/Opten.Core.Test/Opten.Core.Test.csproj", new DotNetCoreTestSettings
+    {
+        Configuration = configuration,
+		ResultsDirectory = results
+    });
 });
 
 Task("Pack")
 	.IsDependentOn("Run-Unit-Tests")
 	.Does(() =>
 {
-	NuGetPackWithDependencies("./Opten.Core.nuspec", new NuGetPackSettings {
-		Version = version,
-		BasePath = "../",
-		OutputDirectory = dest
-	}, feedUrl);
+     DotNetCorePack("../src/Opten.Core/Opten.Core.csproj", new DotNetCorePackSettings
+     {
+         Configuration = configuration,
+         OutputDirectory = dest
+     });
 });
 
 // Deploying
