@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace Opten.Web.Attributes
+namespace Opten.Core.Attributes
 {
 	/// <summary>
 	/// Required if [dependentProperty] has [targetValue]
@@ -21,8 +21,8 @@ namespace Opten.Web.Attributes
 		/// <param name="targetValue">The target value.</param>
 		public RequiredIfAttribute(string dependentProperty, object targetValue)
 		{
-			this._dependentProperty = dependentProperty;
-			this._targetValue = targetValue;
+			_dependentProperty = dependentProperty;
+			_targetValue = targetValue;
 		}
 
 		/// <summary>

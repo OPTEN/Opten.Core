@@ -36,7 +36,7 @@ Task("Version")
 	}
 
 	version = GitDescribe("../", false, GitDescribeStrategy.Tags, 0);
-	
+		
 	PatchAssemblyInfo("../src/Opten.Core/Properties/AssemblyInfo.cs", version);
 	FileWriteText(dest + File("Opten.Core.variables.txt"), "version=" + version);
 });
@@ -73,12 +73,19 @@ Task("Run-Unit-Tests")
 Task("Pack")
 	.IsDependentOn("Run-Unit-Tests")
 	.Does(() =>
-{
-     DotNetCorePack("../src/Opten.Core/Opten.Core.csproj", new DotNetCorePackSettings
-     {
-         Configuration = configuration,
-         OutputDirectory = dest
-     });
+{	
+	ReplaceRegexInFiles("../build/Opten.Core.nuspec", @"(\d+)\.(\d+)\.(\d+)(.(\d+))?", version);
+
+    DotNetCorePack("../src/Opten.Core/Opten.Core.csproj", new DotNetCorePackSettings
+	{
+		Configuration = configuration,
+		OutputDirectory = dest,
+		EnvironmentVariables = new Dictionary<string, string> {
+			{ "NuspecFile", "../../build/Opten.Core.nuspec" },
+			{ "NuspecBasePath", "../../" },
+			{ "PackageVersion", version }
+		}
+    });
 });
 
 // Deploying
