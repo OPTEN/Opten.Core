@@ -74,7 +74,7 @@ Task("Pack")
 	.IsDependentOn("Run-Unit-Tests")
 	.Does(() =>
 {	
-	ReplaceRegexInFiles("../build/Opten.Core.nuspec", @"(\d+)\.(\d+)\.(\d+)(.(\d+))?", version);
+	ReplaceRegexInFiles("../build/Opten.Core.nuspec", @"\$version\$", version);
 
     DotNetCorePack("../src/Opten.Core/Opten.Core.csproj", new DotNetCorePackSettings
 	{
