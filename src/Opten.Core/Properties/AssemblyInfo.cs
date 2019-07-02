@@ -14,7 +14,6 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCopyright("Copyright (c) 2015 - 2019 OPTEN AG")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: Guid("01f4b5d8-e535-428f-83b8-a87cf923633f")]
 [assembly: ComVisible(false)]
 
 [assembly: InternalsVisibleTo("Opten.Core.Test")]

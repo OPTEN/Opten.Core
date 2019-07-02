@@ -2,11 +2,11 @@
 <package>
 	<metadata>
 		<id>Opten.Core</id>
-		<version>0.0.0</version>
+		<version>$version$</version>
 		<title>Opten.Core</title>
 		<authors>OPTEN AG</authors>
 		<owners>OPTEN AG</owners>
-		<projectUrl>https://bitbucket.org/opten/opten-solutions</projectUrl>
+		<projectUrl>https://github.com/OPTEN/Opten.Core</projectUrl>
 		<description><![CDATA[OPTEN Core]]></description>
 		<iconUrl>http://www.opten.ch/nuget/logo.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
