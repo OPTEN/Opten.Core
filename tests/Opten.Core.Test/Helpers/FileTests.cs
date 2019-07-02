@@ -15,8 +15,8 @@ namespace Opten.Core.Test.Helpers
 
 			Assert.AreEqual("test_10012015.png", FileHelper.GetFileNameWithDate(fileName: "test.png", date: dt, format: "ddMMyyyy"));
 			Assert.AreEqual("test_10012015.png", FileHelper.GetFileNameWithDate(fileName: "TEST.png", date: dt, format: "ddMMyyyy"));
-			Assert.AreEqual("test_10012015.mp4", FileHelper.GetFileNameWithDate(fileName: "test.MP4", date: dt, format: "ddMMyyyy"));
-			Assert.AreEqual("test_test2_10012015.mp4", FileHelper.GetFileNameWithDate(fileName: "test test2 .MP4", date: dt, format: "ddMMyyyy"));
+			Assert.AreEqual("test_10012015.MP4", FileHelper.GetFileNameWithDate(fileName: "test.MP4", date: dt, format: "ddMMyyyy"));
+			Assert.AreEqual("test_test2_10012015.MP4", FileHelper.GetFileNameWithDate(fileName: "test test2 .MP4", date: dt, format: "ddMMyyyy"));
 		}
 
 		[Test]
@@ -54,8 +54,7 @@ namespace Opten.Core.Test.Helpers
 		{
 			Assert.AreEqual("png", FileHelper.GetExtensionByFileName(fileName: "file.png"));
 			Assert.AreEqual("png", FileHelper.GetExtensionByFileName(fileName: "file.test1.test2.png"));
-
-			Assert.Throws<NotSupportedException>(() => FileHelper.GetExtensionByFileName(fileName: "file"));
+			Assert.IsEmpty(FileHelper.GetExtensionByFileName(fileName: "file"));
 		}
 
 		[Test]

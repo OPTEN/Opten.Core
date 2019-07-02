@@ -20,11 +20,11 @@ namespace Opten.Core.Helpers
 		/// <param name="date">The date.</param>
 		/// <param name="format">The date format.</param>
 		/// <returns></returns>
-		public static string GetFileNameWithDate(string fileName, string extension, DateTime date, string format = "yyyyMMdd_hhmmss")
+		public static string GetFileNameWithDate(string fileName, string extension, DateTime date, string format = "yyyyMMdd_HHmmss")
 		{
 			fileName = GetFileNameWithoutExtension(fileName: fileName); //TODO: Problem is when file like C.FREI AG the 'FREI AG' is meant as an extension :-/
 			fileName = RemoveInvalidCharactersFromFileName(fileName: fileName);
-			return string.Format(CultureInfo.InvariantCulture, "{0}_{1}.{2}", fileName, date.ToString(format), FixExtension(extension, false));
+			return string.Format(CultureInfo.InvariantCulture, "{0}_{1}.{2}", fileName, date.ToString(format), extension.TrimStart('.'));
 		}
 
 		/// <summary>
@@ -34,7 +34,7 @@ namespace Opten.Core.Helpers
 		/// <param name="date">The date.</param>
 		/// <param name="format">The date format.</param>
 		/// <returns></returns>
-		public static string GetFileNameWithDate(string fileName, DateTime date, string format = "yyyyMMdd_hhmmss")
+		public static string GetFileNameWithDate(string fileName, DateTime date, string format = "yyyyMMdd_HHmmss")
 		{
 			string extension = GetExtensionByFileName(fileName: fileName);
 			return GetFileNameWithDate(fileName: fileName, extension: extension, date: date, format: format);
@@ -47,9 +47,7 @@ namespace Opten.Core.Helpers
 		/// <param name="extension">The extension.</param>
 		/// <returns></returns>
 		public static string GetFileNameWithExtension(string fileName, string extension)
-		{
-			return GetFileNameWithoutExtension(fileName) + FixExtension(extension);
-		}
+			=> $"{GetFileNameWithoutExtension(fileName)}.{extension.TrimStart('.')}";
 
 		/// <summary>
 		/// Gets the file name without extension.
@@ -57,13 +55,7 @@ namespace Opten.Core.Helpers
 		/// <param name="fileName">Name of the file.</param>
 		/// <returns></returns>
 		public static string GetFileNameWithoutExtension(string fileName)
-		{
-			// No need for null check trim, should break!
-			fileName = fileName.Trim();
-
-			if (fileName.Contains(".") == false) return fileName;
-			return fileName.Substring(0, fileName.LastIndexOf("."));
-		}
+			=> Path.GetFileNameWithoutExtension(fileName);
 
 		/// <summary>
 		/// Removes the path from file.
@@ -71,12 +63,7 @@ namespace Opten.Core.Helpers
 		/// <param name="fileName">Name of the file.</param>
 		/// <returns></returns>
 		public static string RemovePathFromFileName(string fileName)
-		{
-			//TODO: Add testings
-			fileName = fileName.Substring(fileName.LastIndexOf('\\') + 1);
-			fileName = fileName.Trim(new[] { '\"' });
-			return fileName.Trim();
-		}
+			=> Path.GetFileName(fileName);
 
 		/// <summary>
 		/// Removes invalid characters from file name (/\?: etc.).
@@ -138,33 +125,12 @@ namespace Opten.Core.Helpers
 		}
 
 		/// <summary>
-		/// Fixes the extension.
-		/// </summary>
-		/// <param name="extension">The extension.</param>
-		/// <param name="withPoint">if set to <c>true</c> [with point].</param>
-		/// <returns></returns>
-		public static string FixExtension(string extension, bool withPoint = true)
-		{
-			// No need for null check trim, should break!
-			extension = extension.Trim().ToLowerInvariant();
-			if (withPoint == false) extension.Replace(".", string.Empty);
-			return extension.StartsWith(".") || withPoint == false ? extension : "." + extension;
-		}
-
-		/// <summary>
 		/// Gets the extension of the file.
 		/// </summary>
 		/// <param name="fileName">The file name.</param>
 		/// <returns></returns>
 		public static string GetExtensionByFileName(string fileName)
-		{
-			if (fileName.Contains(".") == false)
-			{
-				throw new NotSupportedException("Filename doesn't contains extension.");
-			}
-
-			return FixExtension(fileName.Substring(fileName.LastIndexOf('.') + 1), false);
-		}
+			=> Path.GetExtension(fileName).TrimStart('.');
 
 		/// <summary>
 		/// Gets the content type of the file/extension.
@@ -185,7 +151,7 @@ namespace Opten.Core.Helpers
 				extension = GetExtensionByFileName(fileName: fileNameOrExtension);
 			}
 
-			extension = FixExtension(extension, false).ToLowerInvariant();
+			extension = extension.TrimStart('.').ToLowerInvariant();
 
 			if (extension == "ai") { return "application/postscript"; }
 			else if (extension == "aif") { return "audio/x-aiff"; }
