@@ -16,5 +16,8 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: ComVisible(false)]
 
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("9bdd55f1-4f66-448c-9df4-836c1093f83f")]
+
 [assembly: InternalsVisibleTo("Opten.Core.Test")]
 
