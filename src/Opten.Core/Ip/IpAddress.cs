@@ -28,10 +28,7 @@ namespace Opten.Core.Ip
 		/// <param name="ipAddress">The IP Address.</param>
 		/// <returns></returns>
 		public static bool IsIpAddress(string ipAddress)
-		{
-			IPAddress address;
-			return IPAddress.TryParse(ipAddress, out address) && address != null;
-		}
+			=> IPAddress.TryParse(ipAddress, out IPAddress address) && address != null;
 
 		/// <summary>
 		/// Determines whether [is IP Address in range from subnet] [the specified IP Address].
@@ -51,7 +48,10 @@ namespace Opten.Core.Ip
 			IPAddress network1 = subnetAddress.GetNetworkAddress(subnet);
 			IPAddress network2 = ip.GetNetworkAddress(subnet);
 
-			if (network1 == null || network1 == null) return false;
+			if (network1 == null || network1 == null)
+			{
+				return false;
+			}
 
 			return network1.Equals(network2);
 		}
@@ -91,18 +91,26 @@ namespace Opten.Core.Ip
 		{
 			if (string.IsNullOrEmpty(ipAddress)) return false;
 
-			int ipAddressesCount = ipAddresses.Count(),
-				subnetMasksCount = subnetMasks.Count();
+			int ipAddressesCount = ipAddresses.Count();
+			int subnetMasksCount = subnetMasks.Count();
 
-			if (ipAddressesCount == 0 || subnetMasksCount == 0) return false;
+			if (ipAddressesCount == 0 || subnetMasksCount == 0)
+			{
+				return false;
+			}
 
 			for (int i = 0; i < ipAddressesCount; i++)
 			{
 				// there is no subnetmask found for this ip
-				if (subnetMasksCount < (i + 1)) continue;
+				if (subnetMasksCount < (i + 1))
+				{
+					continue;
+				}
 
 				if (IsIpAddressInRangeFromSubnet(ipAddress, ipAddresses[i], subnetMasks[i]))
+				{
 					return true;
+				}
 			}
 
 			return false;
@@ -117,26 +125,35 @@ namespace Opten.Core.Ip
 		/// <returns></returns>
 		public static bool IsIpAddressInRange(string ipAddressLower, string ipAddressUpper, string ipAddress)
 		{
-			IPAddress lower = IPAddress.Parse(ipAddressLower),
-					  upper = IPAddress.Parse(ipAddressUpper),
-					  ip = IPAddress.Parse(ipAddress);
+			IPAddress lower = IPAddress.Parse(ipAddressLower);
+			IPAddress upper = IPAddress.Parse(ipAddressUpper);
+			IPAddress ip = IPAddress.Parse(ipAddress);
 
-			if (lower == null || upper == null || ip == null) return false;
+			if (lower == null || upper == null || ip == null)
+			{
+				return false;
+			}
 
-			if (lower.AddressFamily != ip.AddressFamily) return false;
+			if (lower.AddressFamily != ip.AddressFamily)
+			{
+				return false;
+			}
 
-			byte[] ipBytes = ip.GetAddressBytes(),
-				   lowerBytes = lower.GetAddressBytes(),
-				   upperBytes = upper.GetAddressBytes();
+			byte[] ipBytes = ip.GetAddressBytes();
+			byte[] lowerBytes = lower.GetAddressBytes();
+			byte[] upperBytes = upper.GetAddressBytes();
 
-			bool lowerBoundary = true,
-				 upperBoundary = true;
+			bool lowerBoundary = true;
+			bool upperBoundary = true;
 
 			for (int i = 0; i < lowerBytes.Length && (lowerBoundary || upperBoundary); i++)
 			{
 				if ((lowerBoundary && ipBytes[i] < lowerBytes[i])
 					||
-					(upperBoundary && ipBytes[i] > upperBytes[i])) return false;
+					(upperBoundary && ipBytes[i] > upperBytes[i]))
+				{
+					return false;
+				}
 
 				lowerBoundary &= (ipBytes[i] == lowerBytes[i]);
 				upperBoundary &= (ipBytes[i] == upperBytes[i]);
@@ -151,13 +168,17 @@ namespace Opten.Core.Ip
 			byte[] subnetMaskBytes = subnetMask.GetAddressBytes();
 
 			if (ipAddressBytes.Length != subnetMaskBytes.Length)
+			{
 				return null;
+			}
 
 			byte[] broadcastAddress = new byte[ipAddressBytes.Length];
+
 			for (int i = 0; i < broadcastAddress.Length; i++)
 			{
 				broadcastAddress[i] = (byte)(ipAddressBytes[i] & (subnetMaskBytes[i]));
 			}
+
 			return new IPAddress(broadcastAddress);
 		}
 	}
